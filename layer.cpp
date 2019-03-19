@@ -50,25 +50,51 @@ void Layer::setWeitghts(vector<double> weightsAndBiases){
 }
 
 vector<double> Layer::getWeights(){
-
+    vector<double> tmp;
+    for(uint i = 0; i<_neurons.size(); i++){
+        for(uint j = 0; j<_neurons[i]->_inputs.size(); j++){
+            tmp.push_back(_neurons[i]->_inputs[j]._weight);
+        }
+    }
+    return tmp;
 }
 
+inline bool Layer::anyAwaiting(){
+    for(uint i = 0; i<_neurons.size(); i++){
+        if(_neurons[i]->awaiting==true) return true;
+    }
+    return false;
+}
 
+Layer::~Layer(){
+    for(auto& i : _neurons){
+        delete i;
+    }
+}
 
-FreeLayer::FreeLayer(double (*transferFcn)(double),int size,Layer* in, Layer* out): Layer(transferFcn,size,in,out) {
+FreeLayer::FreeLayer(double (*transferFcn)(double),int size): Layer(transferFcn,size) {
     //turns awaiting state in all neurons:
-    for(int i = 0; i<_neurons.size(); i++){
+    for(uint i = 0; i<_neurons.size(); i++){
         _neurons[i]->awaiting=true;
     }
 }
 
 
 void FreeLayer::runCalculations(){
-    for(unsigned int i = 0; i<_neurons.size(); i++){
-
-        _neurons[i]->calculateOutput();
+    while(anyAwaiting()){
+        for(unsigned int i = 0; i<_neurons.size(); i++){
+            if(_neurons[i]->awaitingPrevious()==false){
+                _neurons[i]->calculateOutput();
+                _neurons[i]->awaiting=false;
+            }
+        }
     }
 }
+
+void FreeLayer::AddNode(){
+    _neurons.push_back(new Neuron(TanSig));
+}
+
 
 
 InputLayer::InputLayer(int size): Layer(nullptr,size,nullptr,nullptr){ }

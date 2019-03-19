@@ -13,11 +13,11 @@ double TanSig(double input){
     return 2/(1+exp(-2*input))-1;
 }
 
-inline double randomDouble(double lowlimit,double uplimit){
+double randomDouble(double lowlimit,double uplimit){
     double f = (double)rand() / RAND_MAX;
     return lowlimit+f*(uplimit - lowlimit);
 }
 
-inline int randomInt(int lowlimit, int uplimit){
+int randomInt(int lowlimit, int uplimit){
     return rand()%(uplimit-lowlimit)+lowlimit;
 }

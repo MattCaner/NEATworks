@@ -1,0 +1,34 @@
+Implementacja algorytmu NEAT by Maciej Trzciński/Matt Caner 2019
+
+Chwała Omnizjaszowi!
+
+-----------------------------\
+Na górze róże                |
+Na dole szakale              |
+Ten dokument jest po to      |
+By nie musieć oszaleć        |
+-----------------------------/
+
+Generalne działanie:
+
+neurony są zaczepione w neuronach poprzednich warstw. Dane są pobierane z przodu od wcześniejszych neuronów.
+
+UnLayered dozwala dowolne topologie sieci, FeedForward musi składać się z określonej ilości sztywno i gęsto połączonych warstw.
+
+
+UWAGA: ! ! ! ! ! ! ! ! ! ! ! 
+Numeracja neuronów
+0->X     inputy
+X+1->Y   outputy
+Y+1->z   unlayered
+
+input[i] = i
+output[i] = i+rozmiar inputu
+hidden[i] = i+rozmiar inputu + rozmiar outputu
+
+TRZEBA SIĘ TEGO TRZYMAĆ. <- ten ujednolicony zapis jest ASBOLUTNIE KONIECZNY BY NIE OSZALEĆ
+
+TODO:
+
+# konwersja geny->sieci
+#

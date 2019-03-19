@@ -6,13 +6,15 @@ struct Link;
 class Layer;
 
 class Neuron{
-public:    void setWeitghts(vector<double> weightsAndBiases);      //set all weights and biases to values given in vector.
+public:    
+    void setWeitghts(vector<double> weightsAndBiases);      //set all weights and biases to values given in vector.
     vector<double> getWeights();                            //get all weights and biases as a single double vector.
     Neuron(double (*transferFcn)(double));      //creates a neuron without any inputing weights (in most common case such neuron is an input neuron)
     Neuron(double (*transferFcn)(double), vector<Neuron*>& inputingNeurons);
     Neuron(double (*transferFcn)(double),vector<Neuron*>& inputingNeurons, vector<double> inputingWeights, double bias);     //
+    virtual ~Neuron();
 
-    int getNumberOfInputs() const {return _inputs.size();}  //returns number of inputs given neuron has.  
+    int getNumberOfInputs() const { return _inputs.size();}  //returns number of inputs given neuron has.  
 
     void connectBack(Neuron& to, double weight = 1);   //make connection between this neuron and other neuron (data flows towards this neuron)
     void connectForward(Neuron& to, double weight = 1);    //make connection between this neuron and other neuron (data flows towards the other neuron)
@@ -26,13 +28,13 @@ public:    void setWeitghts(vector<double> weightsAndBiases);      //set all wei
     bool awaiting;                          //a single byte wasted for purpose of UnLayered Nets - this bool indicates if this particular neuron has its output ready to be processed by other neurons. Defaults to 0 in feed-forward
     bool awaitingPrevious();                //returns true if there are any awaiting neurons in inputs.
 
-    double getOutput() const {return _output;}
+    double getOutput() const {return _output;}      //returns output of this neuron
 
-    void overWriteWeights(vector<double> newWeights);
+    void overWriteWeights(vector<double> newWeights);   //overwrites weights on inputing links to the weights given in vector
 
-    virtual void calculateOutput();
+    virtual void calculateOutput();             //takes inputs, adds them with weights, calculates the output so it can be get with getOutput()
 
-    friend Layer;
+    friend Layer;                               //as layer operation require immense modifications and reading of neurons, it has full access to its non-public members
 
 protected:
     double (*_transferFcn)(double);

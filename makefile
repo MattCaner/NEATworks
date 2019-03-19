@@ -28,7 +28,7 @@ $(EXECNAME): $(OBJ)
 $(EXECNAME_LOUD): $(OBJ)
 	$(CXX) $(LOUD_FLAGS) $? -o $@
 
-.PHONY: clean run loud
+.PHONY: clean run loud memcheck
 
 clean:
 	rm -f $(EXECNAME) $(OBJ) $(DEP)
@@ -40,5 +40,8 @@ run: $(EXECNAME)
 loud: $(EXECNAME_LOUD)
 	#rm -f $(OBJ) $(DEP)
 	./$(EXECNAME_LOUD)
+
+memcheck: $(EXECNAME)
+	valgrind ./$(EXECNAME)
 
 -include $(DEP)

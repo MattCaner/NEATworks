@@ -1,0 +1,3 @@
+#include"gene.hpp"
+
+//it's a little empty in there, maybe because all gene functions are inline getters...

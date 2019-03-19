@@ -3,14 +3,15 @@
 
 class Layer{            //general-use layer and mother class for all layer-type classes. Supports basic functions for controlling and managing neuron layer.
 public:
-    Layer(double (*transferFcn)(double),int size,Layer* prevLayer,Layer* nextLayer);    //general constructor.
+    Layer(double (*transferFcn)(double),int size,Layer* prevLayer = nullptr,Layer* nextLayer = nullptr);    //general constructor.
+    virtual ~Layer();                                                                           //a non-default destructor is necessary (to prevent memory leaks)
     void changeTransferFcn(double (*transferFcn)(double));                              //changes transfer function for all neurons in this layer.
 
     void connectLayers(Layer& to, bool back = true);        //connects this layer with another one. By default this layer is treated as the one closer to output.
 
     int getSize() const {return _neurons.size();}           //returns number of neurons in layer.
     Layer& getPrevLayer() const {return *_prevLayer;}       //returns previous layer this layer is connected to
-    Layer& getNextLater() const {return *_nextLayer;};      //returns next layer this layer is connected to.
+    Layer& getNextLater() const {return *_nextLayer;}       //returns next layer this layer is connected to.
     
     void setPrevLayer(Layer* pl) {_prevLayer = pl;}         //set pointer to previous layer
     void setNextLayer(Layer* nl) {_nextLayer = nl;}         //set pointer to next layer (yet unused)
@@ -23,7 +24,9 @@ public:
     void setWeitghts(vector<double> weightsAndBiases);      //set all weights and biases to values given in vector.
     vector<double> getWeights();                            //get all weights and biases as a single double vector.
 
+
 protected:
+    inline bool anyAwaiting();                              //returns true if there are any neuron that has awaiting switched on.
     vector<Neuron*> _neurons;
     Layer* _prevLayer;
     Layer* _nextLayer;
@@ -31,9 +34,9 @@ protected:
 
 class FreeLayer: public Layer{
 public:
-    FreeLayer(double (*transferFcn)(double),int size,Layer* in, Layer* out);    //general-use constructor that have similar functionality to Layer base class constructor
+    FreeLayer(double (*transferFcn)(double),int size);    //general-use constructor that have similar functionality to Layer base class constructor
     void runCalculations();         //runs calculations through the layer (takes all the inputs and returns all the outputs
-
+    void AddNode();
 };
 
 

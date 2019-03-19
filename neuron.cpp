@@ -48,7 +48,12 @@ void Neuron::setOutput(double value){
 }
 
 bool Neuron::awaitingPrevious(){
-    for(int i = 0; i< _inputs.size(); i++){
-        
+    for(uint i = 0; i< _inputs.size(); i++){
+        if(_inputs[i]._to->awaiting==true) return true;
     }
+    return false;
+}
+
+Neuron::~Neuron(){
+    //left non-default for any future changes
 }

@@ -1,82 +1,51 @@
-#include"neuralib.hpp"
+#pragma once
+#include"specimen.hpp"
+
+
+/*
+ * Selection methods:
+ *      NumericalRoulette - breeding is based on numerical function
+ *      NumericalTournament - breeding is tournament based, evaluation of winners is based on numerical functions
+ *      BooleanTournamend - breeding is tournament based, evaluation of winners is boolean based (winner/loser)
+ */
+
+
 
 class Population{
 public:
-    Population(int size, int epochs, int inSize, int outSize);
-    void Step();
-    Specimen Evaluate();
+    Population(int size, int epochs, int inSize, int outSize,vector<Specimen*> (*SelectionFunction)(vector<Specimen*>, double));
+    ~Population();     
+    void Step();                                                    //step by one epoch
+    Specimen Evaluate();                                            //return best specimen
+
+    int getEpoch() const {return _epoch;}                           //return number of epoch
     
 protected:
+    
+    //selection function must take specimen vector and breeding coefficient d in form of double.
+    //it has to return specimen vector with at least d*(original size) unique parents to breed.
+    //d is a number between 0 and 1. Returned value must be the sime as original size.
+    vector<Specimen*> (*_SelectionFunction)(vector<Specimen*>, double);
+
+    //breeding function takes two specimens and returns their offspring.
+    Specimen Breed(const Specimen& s1, const Specimen& s2);
+
+    //general variables:
     int _popsize;
     int _epoch;
     int _maxepochs;
-    void Select();
-    void Breed();
-    void Mutate();
     double _breedingCoefficient;
     double _nodeMutation;
     double _connectionMutation;
 
-    int innovationMeter_;
+    //specimen specification
+    int _inSpecimenSize;
+    int _outSpecimenSize;
 
+    //innovation counter, a key element in NEAT network:
+    int _innovationCounter;
+
+    //holding space for population and best specimens:
     vector<Specimen*> _popTable;
     vector<Specimen*> _winnerTable;
 };
-
-
-class Specimen{         //Class for a single 1-chromosome NEAT specimen that consists of node and connection genes.
-public:
-    Specimen(int inputs, int outputs);
-    explicit operator UnLayeredNet();
-
-    Specimen& mutateNode(int innovation);   //adds 3 to innovation number
-    Specimen& mutateLink(int innovation);   //adds 1 to innovation number
-
-    Specimen& addNode(int prev, int next);
-    Specimen& addConnection(int nodeFrom, int nodeTo, double weight);
-    Specimen& switchConnection(int nodeFrom, int nodeTo, bool state);
-    
-    int getLowestInnovation() const;
-    int getHighestInnovation() const;
-
-
-    friend Specimen NEATbreeding(Specimen& s1, Specimen& s2);
-
-protected:
-    int _largestNodeIndex;
-    int _inSize;
-    int _outSize;
-    vector<NodeGene*> _nodes;
-    vector<ConnectionGene*> _connections;
-};
-
-
-Specimen NEATbreeding(Specimen& s1, Specimen& s2);
-
-
-class NodeGene{
-public:
-    NodeGene(int identifier, int innovation);
-    NodeGene() = default;
-    int getInnovation() const {return _innovation;}
-
-protected:
-    int _identification;
-    int _innovation;
-};
-
-class ConnectionGene{
-public:
-    ConnectionGene(int inID, int outID, double weight, int innovation);
-    ConnectionGene() = default;
-    int getInnovation() const {return _innovation;}
-    int getIn() const {return _inID;}
-    int getOut() const {return _outID;}
-protected:
-    int _inID;
-    int _outID;
-    double _weight;
-    bool _enabled;
-    int _innovation;
-};
-
