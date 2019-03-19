@@ -29,6 +29,5 @@ hidden[i] = i+rozmiar inputu + rozmiar outputu
 TRZEBA SIĘ TEGO TRZYMAĆ. <- ten ujednolicony zapis jest ASBOLUTNIE KONIECZNY BY NIE OSZALEĆ
 
 TODO:
-
-# konwersja geny->sieci
+# usprawnienie 2048
 #
